@@ -1,0 +1,21 @@
+install.packages("foreign")
+install.packages("ggplot2")
+install.packages("ggmap")
+install.packages("reshape2")
+install.packages("maps")
+
+library(foreign)
+library(ggplot2)
+library(ggmap)
+library(reshape2)
+library(maps)
+attach(economia)
+desemprego <- subset(economia, select=c(country, unemployment_rate))
+mundo  = map_data("world")   
+mundo1 <- merge (mundo, desemprego, by.x="region", by.y="country", all.x=T, all.y=F) 
+mundo1 <- mundo1[order(mundo1$order),] 
+m0 <- ggplot(data=mundo1)
+m1 <- m0 + geom_polygon(aes(x=long, y=lat, group=group, fill=unemployment_rate)) + coord_equal()
+m2 <- m1 + geom_path(aes(x=long, y=lat, group=group), color='black', linewidth=.1)
+m3 <- m2 + scale_fill_gradient(low = "white", high = "purple")
+m3
